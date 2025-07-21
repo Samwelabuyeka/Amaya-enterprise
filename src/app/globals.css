@@ -1,0 +1,13 @@
+body {
+  margin: 0;
+  font-family: system-ui, sans-serif;
+  background: #fff;
+  color: #000;
+}
+a {
+  text-decoration: none;
+  color: inherit;
+}
+nav a:hover {
+  text-decoration: underline;
+}
