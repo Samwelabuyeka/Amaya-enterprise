@@ -1,38 +1,42 @@
-import { getAllProducts } from "@/lib/supabase/queries";
-import Image from "next/image";
-import Link from "next/link";
+'use client';
 
-export default async function ProductsPage() {
-  const products = await getAllProducts();
+import { useEffect, useState } from 'react';
+import Link from 'next/link';
+
+type Product = {
+  id: string;
+  name: string;
+  brand: string;
+  price: number;
+  image?: string;
+};
+
+export default function ProductsPage() {
+  const [products, setProducts] = useState<Product[]>([]);
+
+  useEffect(() => {
+    fetch('/api/products')
+      .then(res => res.json())
+      .then(data => setProducts(data))
+      .catch(() => console.error('Failed to load products'));
+  }, []);
 
   return (
-    <div className="p-4 max-w-5xl mx-auto">
-      <h1 className="text-2xl font-bold mb-4">All Products</h1>
-
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-        {products.map((product) => (
-          <Link
-            key={product.id}
-            href={`/home/products/${product.slug}`}
-            className="border rounded-xl p-2 hover:shadow-lg transition"
-          >
-            {product.image_url && (
-              <Image
-                src={product.image_url}
-                alt={product.name}
-                width={200}
-                height={200}
-                className="rounded-md object-cover w-full h-40"
-              />
-            )}
-            <div className="mt-2">
-              <h2 className="font-semibold text-lg">{product.name}</h2>
-              <p className="text-gray-600 text-sm">{product.brand_name}</p>
-              <p className="text-green-600 font-bold">Ksh {product.price}</p>
-            </div>
-          </Link>
-        ))}
-      </div>
+    <div className="p-6 grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3">
+      {products.map(product => (
+        <Link
+          key={product.id}
+          href={`/products/${product.id}`}
+          className="block border p-4 rounded shadow hover:shadow-md transition"
+        >
+          {product.image && (
+            <img src={product.image} alt={product.name} className="mb-2 w-full h-40 object-cover" />
+          )}
+          <h2 className="text-lg font-semibold">{product.name}</h2>
+          <p className="text-sm text-gray-600">Brand: {product.brand}</p>
+          <p className="text-blue-600 font-bold">${product.price}</p>
+        </Link>
+      ))}
     </div>
   );
 }

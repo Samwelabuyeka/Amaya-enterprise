@@ -13,29 +13,44 @@ type Brand = {
 
 export default function BrandsPage() {
   const [brands, setBrands] = useState<Brand[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     fetch('/api/brands')
-      .then(res => res.json())
-      .then(data => setBrands(data))
-      .catch(() => console.error('Failed to load brands.'));
+      .then((res) => res.json())
+      .then((data) => {
+        setBrands(data);
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.error('Failed to load brands:', err);
+        setLoading(false);
+      });
   }, []);
 
   return (
-    <main className="p-6">
+    <div className="p-4">
       <h1 className="text-2xl font-bold mb-4">Explore Brands</h1>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-        {brands.map((brand) => (
-          <Link
-            href={`/brand/${brand.id}`}
-            key={brand.id}
-            className="border rounded-xl p-4 hover:shadow-md"
-          >
-            <h2 className="text-lg font-semibold">{brand.name}</h2>
-            <p className="text-sm text-gray-500">{brand.category} • {brand.region}</p>
-          </Link>
-        ))}
-      </div>
-    </main>
+      {loading ? (
+        <p>Loading...</p>
+      ) : (
+        <ul className="space-y-4">
+          {brands.map((brand) => (
+            <li key={brand.id} className="border p-4 rounded shadow hover:shadow-lg transition">
+              <h2 className="text-xl font-semibold">{brand.name}</h2>
+              <p className="text-gray-600">Category: {brand.category}</p>
+              <p className="text-gray-600">Region: {brand.region}</p>
+              <p className="text-gray-600">Contact: {brand.contact}</p>
+              <Link
+                href={`/brands/${brand.id}`}
+                className="text-blue-500 hover:underline mt-2 inline-block"
+              >
+                View Details
+              </Link>
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
   );
 }
