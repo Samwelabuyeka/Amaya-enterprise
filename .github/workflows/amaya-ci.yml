@@ -1,0 +1,44 @@
+name: Amaya CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install deps
+        run: npm ci
+
+      - name: Lint (if config present)
+        run: |
+          if [ -f "eslint.config.js" ] || [ -f "eslint.config.mjs" ] || [ -f ".eslintrc.json" ] || [ -f ".eslintrc.js" ]; then
+            npx eslint . --ext .js,.jsx,.ts,.tsx || true
+          else
+            echo "No ESLint config found — skipping."
+          fi
+
+      - name: Build
+        run: npm run build
+
+      - name: Upload build artifacts
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: amaya-dist
+          path: |
+            dist
+            build
+            .next
+          if-no-files-found: ignore
