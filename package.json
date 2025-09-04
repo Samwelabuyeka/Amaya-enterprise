@@ -3,9 +3,9 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "preview": "vite preview",
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
     "genkit": "tsx genkit.ts"
   },
   "dependencies": {
@@ -19,6 +19,7 @@
     "firebase": "^12.0.0",
     "genkit": "^1.15.1",
     "lucide-react": "^0.287.0",
+    "next": "^14.0.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.23.0",
@@ -26,12 +27,12 @@
     "zod": "^3.25.76"
   },
   "devDependencies": {
-    "@vitejs/plugin-react": "^4.2.1",
-    "autoprefixer": "^10.4.19",
-    "postcss": "^8.4.31",
-    "tailwindcss": "^3.4.1",
-    "tsx": "^4.20.3",
-    "vite": "^5.0.12"
+  "@vitejs/plugin-react": "^4.2.1",
+  "autoprefixer": "^10.4.19",
+  "postcss": "^8.4.31",
+  "tailwindcss": "^3.4.1",
+  "tsx": "^4.20.3",
+  "vite": "^5.0.12"
   },
   "description": "",
   "main": "vite.config.js",

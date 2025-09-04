@@ -1,37 +1,26 @@
 'use client';
 
 import { useEffect } from 'react';
-import { initializeApp } from 'firebase/app';
-import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged } from 'firebase/auth';
-
-const firebaseConfig = {
-  apiKey: "AIzaSyCH0O60-xxFymCMdeBCUpKOQ67BV5CbCwE",
-  authDomain: "amaya-2da6f.firebaseapp.com",
-  projectId: "amaya-2da6f",
-  storageBucket: "amaya-2da6f.appspot.com",
-  messagingSenderId: "1001359297903",
-  appId: "1:1001359297903:web:0f48021c7f95098480ec9a",
-};
-
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const provider = new GoogleAuthProvider();
+import { onAuthStateChanged } from 'firebase/auth';
+import { auth } from '@/lib/firebase';
+import { signInWithGoogle } from '@/lib/firebase/auth';
 
 export default function LoginButton() {
   useEffect(() => {
-    onAuthStateChanged(auth, (user) => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
         alert(`Welcome, ${user.displayName}`);
       }
     });
+    return () => unsubscribe();
   }, []);
 
   const login = async () => {
     try {
-      await signInWithPopup(auth, provider);
+      await signInWithGoogle();
     } catch (err) {
       console.error(err);
-      alert("Login failed.");
+      alert('Login failed.');
     }
   };
 

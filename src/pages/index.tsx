@@ -1,8 +1,6 @@
 "use client";
 
-import Image from "next/image"; import Link from "next/link"; import { useEffect, useState } from "react"; import { createClient } from "@supabase/supabase-js";
-
-const supabase = createClient( "https://amaya-2da6f.supabase.co", "AIzaSyCH0O60-xxFymCMdeBCUpKOQ67BV5CbCwE" );
+import Image from "next/image"; import Link from "next/link"; import { useEffect, useState } from "react"; import { supabase } from "../../lib/supabase";
 
 export default function Home() { const [brands, setBrands] = useState<any[]>([]);
 

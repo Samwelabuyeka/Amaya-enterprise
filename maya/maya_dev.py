@@ -3,11 +3,17 @@ from supabase import create_client, Client
 import openai
 
 # ✅ Amaya Production Credentials
-SUPABASE_URL = "https://amaya-2da6f.supabase.co"
-SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+SUPABASE_URL = os.getenv('SUPABASE_URL') or os.getenv('NEXT_PUBLIC_SUPABASE_URL')
+SUPABASE_ANON_KEY = os.getenv('SUPABASE_ANON_KEY') or os.getenv('NEXT_PUBLIC_SUPABASE_ANON_KEY')
 
-# Replace with your actual OpenAI key for Maya core intelligence
-OPENAI_API_KEY = "sk-REPLACE-WITH-YOUR-KEY"
+# OpenAI key must be set in env (do NOT commit API keys)
+OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
+
+if not SUPABASE_URL or not SUPABASE_ANON_KEY:
+    raise RuntimeError('SUPABASE_URL and SUPABASE_ANON_KEY must be set in environment')
+
+if not OPENAI_API_KEY:
+    raise RuntimeError('OPENAI_API_KEY must be set in environment')
 
 # ✅ Init Supabase Client
 supabase: Client = create_client(SUPABASE_URL, SUPABASE_ANON_KEY)
