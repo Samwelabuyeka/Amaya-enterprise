@@ -1,12 +1,20 @@
 "use client";
 
 import Image from "next/image"; import Link from "next/link"; import { useEffect, useState } from "react"; import { supabase } from "../../lib/supabase";
+import SearchBar from "../components/SearchBar";
+import MayaFloatingChat from "../components/MayaFloatingChat";
 
 export default function Home() { const [brands, setBrands] = useState<any[]>([]);
 
 useEffect(() => { const fetchBrands = async () => { const { data, error } = await supabase.from("brands").select("*").limit(12); if (!error) setBrands(data || []); }; fetchBrands(); }, []);
 
 return ( <main className="min-h-screen bg-white text-black dark:bg-black dark:text-white"> {/* Hero Section */} <section className="px-6 py-20 text-center bg-gradient-to-br from-black to-gray-900 text-white"> <h1 className="text-5xl font-bold mb-4">Welcome to Amaya Marketplace</h1> <p className="text-xl max-w-2xl mx-auto">Explore, discover, and connect with the world's most authentic and inspiring brands.</p> <Link href="/brands" className="mt-6 inline-block px-6 py-3 bg-white text-black font-medium rounded-xl shadow-lg">Browse Brands</Link> </section>
+
+{/* Search */}
+  <section className="py-8 px-4 bg-white dark:bg-black">
+    <SearchBar />
+  </section>
+  <MayaFloatingChat />
 
 {/* Categories */}
   <section className="py-16 px-6 bg-gray-100 dark:bg-zinc-900">

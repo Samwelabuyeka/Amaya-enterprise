@@ -1,0 +1,44 @@
+name: Signed Build
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+      - name: Install
+        run: npm ci
+      - name: Build
+        run: npm run build
+      - name: Compute artifact hash
+        run: |
+          tar -czf app.tar.gz .next package.json package-lock.json
+          sha256sum app.tar.gz > artifact.sha256
+      - name: Sign artifact (prototype - requires secret)
+        env:
+          PRIVATE_KEY: ${{ secrets.BUILD_PRIVATE_KEY }}
+        run: |
+          if [ -z "$PRIVATE_KEY" ]; then
+            echo "BUILD_PRIVATE_KEY is not set; skipping signing step."
+            exit 0
+          fi
+          echo "$PRIVATE_KEY" > key.pem
+          chmod 600 key.pem
+          openssl dgst -sha256 -sign key.pem -out artifact.sig artifact.sha256
+          # Remove key file securely where available
+          if command -v shred >/dev/null 2>&1; then shred -u key.pem; else rm -f key.pem; fi
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: amaya-signed-build
+          path: |
+            app.tar.gz
+            artifact.sha256
+            artifact.sig

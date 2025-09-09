@@ -1,0 +1,51 @@
+version: '3.8'
+
+services:
+  web:
+    build: .
+    ports:
+      - '3000:3000'
+    environment:
+      - NODE_ENV=production
+    depends_on:
+      - neuron_manager
+      - faiss
+
+  neuron_manager:
+    build: ./services/neuron-manager
+    ports:
+      - '8001:8001'
+    environment:
+      - PYTHONUNBUFFERED=1
+    # GPU support: try both legacy runtime and compose device_requests for compatibility
+    runtime: nvidia
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - capabilities: [gpu]
+    device_requests:
+      - driver: nvidia
+        count: -1
+        capabilities: [gpu]
+
+  faiss:
+    build: ./services/faiss
+    ports:
+      - '8002:8002'
+    environment:
+      - PYTHONUNBUFFERED=1
+    runtime: nvidia
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - capabilities: [gpu]
+    device_requests:
+      - driver: nvidia
+        count: -1
+        capabilities: [gpu]
+
+networks:
+  default:
+    driver: bridge
